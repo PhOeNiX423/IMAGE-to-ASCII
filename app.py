@@ -1,6 +1,4 @@
 from tkinter import *
-from tkinter import font
-
 import Pmw as Pmw
 import numpy as np
 from PIL import Image
@@ -118,7 +116,7 @@ def main():
 
     filename = outFile
     root = Tk()
-    root.title('IMG to ASCII')
+    root.title('ConvertToText')
     root.geometry('1600x900')
     top = Frame(root)
     top.pack(side='top')
@@ -138,13 +136,13 @@ def main():
 
 
 root = Tk()
-root.title("IMG в ASCII")
+root.title("ConvertToText")
 
 file = StringVar()
 num_of_cols = IntVar()
 
-file_label = Label(text="Введите название файла с картинкой:")
-num_of_cols_label = Label(text="Введите количество столбцов для отображения ASCII-арта:")
+file_label = Label(text="Введите название файла с картинкой для конвертации:")
+num_of_cols_label = Label(text="Введите желаемый размер ASCII-арта:")
 
 file_label.grid(row=0, column=0, sticky="w")
 num_of_cols_label.grid(row=1, column=0, sticky="w")

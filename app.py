@@ -2,8 +2,6 @@ import argparse
 import numpy as np
 from PIL import Image
 
-# gray scale level values from:
-
 
 # 70 levels of gray
 gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "

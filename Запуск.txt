@@ -1,3 +1,5 @@
 python "app.py" --file foto1.jpg --cols 120
 python "app.py" --file foto1.jpg --cols 240
 python "app.py" --file foto1.jpg --cols 360
+python "app.py" --file foto5.jpg --cols 480
+python "app.py" --file foto6.jpg --cols 720

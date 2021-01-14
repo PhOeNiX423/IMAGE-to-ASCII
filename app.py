@@ -1,7 +1,9 @@
-import argparse
+from tkinter import *
+from tkinter import font
+
+import Pmw as Pmw
 import numpy as np
 from PIL import Image
-
 
 # 70 levels of gray
 gscale1 = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. "
@@ -11,9 +13,6 @@ gscale2 = '@%#*+=-:. '
 
 
 def getAverageL(image):
-    """
-    Given PIL Image, return average value of grayscale value
-    """
     # get image as numpy array
     im = np.array(image)
 
@@ -24,10 +23,7 @@ def getAverageL(image):
     return np.average(im.reshape(w * h))
 
 
-def covertImageToAscii(fileName, cols, scale, moreLevels):
-    """
-    Given Image and dims (rows, cols) returns an m*n list of Images
-    """
+def convertImageToAscii(fileName, cols, scale):
     # declare globals
     global gscale1, gscale2
 
@@ -86,67 +82,82 @@ def covertImageToAscii(fileName, cols, scale, moreLevels):
             avg = int(getAverageL(img))
 
             # look up ascii char
-            if moreLevels:
-                gsval = gscale1[int((avg * 69) / 255)]
-            else:
-                gsval = gscale2[int((avg * 9) / 255)]
-
-                # append ascii char to string
+            gsval = gscale2[int((avg * 9) / 255)]
             aimg[j] += gsval
 
-            # return txt image
+    # return txt image
     return aimg
 
 
 # main() function
 def main():
     # create parser
-    descStr = "This program covert image to ASCII"
-    parser = argparse.ArgumentParser(description=descStr)
-    # add expected arguments
-    parser.add_argument('--file', dest='imgFile', required=True)
-    parser.add_argument('--scale', dest='scale', required=False)
-    parser.add_argument('--out', dest='outFile', required=False)
-    parser.add_argument('--cols', dest='cols', required=False)
-    parser.add_argument('--morelevels', dest='moreLevels', action='store_true')
 
-    # parse args
-    args = parser.parse_args()
+    imgFile = file.get()
 
-    imgFile = args.imgFile
-
-    # set output file
-    outFile = 'OPEN_ME.txt'
-    if args.outFile:
-        outFile = args.outFile
-
-        # set scale default as 0.43 which suits
-    # a Courier font
     scale = 0.43
-    if args.scale:
-        scale = float(args.scale)
 
-        # set cols
-    cols = 80
-    if args.cols:
-        cols = int(args.cols)
+    outFile = 'OPEN_ME.txt'
+
+    cols = num_of_cols.get()
 
     print('Start converting the image...')
     # convert image to ascii txt
-    aimg = covertImageToAscii(imgFile, cols, scale, args.moreLevels)
+    aimg = convertImageToAscii(imgFile, cols, scale)
 
     # open file
     f = open(outFile, 'w')
 
     # write to file
     for row in aimg:
+        # cleanup
         f.write(row + '\n')
 
-        # cleanup
     f.close()
     print("The finished ASCII-art is located in %s" % outFile)
 
+    filename = outFile
+    root = Tk()
+    root.title('IMG to ASCII')
+    root.geometry('1600x900')
+    top = Frame(root)
+    top.pack(side='top')
+    text = Pmw.ScrolledText(top,
+                            borderframe=0,
+                            vscrollmode='dynamic',
+                            hscrollmode='dynamic',
+                            text_width=180,
+                            text_height=45,
+                            labelpos='n',
+                            text_wrap='none',
+                            )
+    text.pack()
+    text.insert('end', open(filename, 'r').read())
+    Button(root, text="ОК", command=root.destroy).pack()
+    root.mainloop()
 
-# call main
-if __name__ == '__main__':
-    main()
+
+root = Tk()
+root.title("IMG в ASCII")
+
+file = StringVar()
+num_of_cols = IntVar()
+
+file_label = Label(text="Введите название файла с картинкой:")
+num_of_cols_label = Label(text="Введите количество столбцов для отображения ASCII-арта:")
+
+file_label.grid(row=0, column=0, sticky="w")
+num_of_cols_label.grid(row=1, column=0, sticky="w")
+
+file_entry = Entry(textvariable=file)
+num_of_cols_entry = Entry(textvariable=num_of_cols)
+
+file_entry.grid(row=0, column=1, padx=5, pady=5)
+num_of_cols_entry.grid(row=1, column=1, padx=5, pady=5)
+
+exit = Button(text="Выход", command=root.destroy)
+exit.grid(row=2, column=0, padx=3, pady=5, sticky="e")
+message_button = Button(text="Конвертировать", command=main)
+message_button.grid(row=2, column=1, padx=4, pady=5, sticky="e")
+
+root.mainloop()
